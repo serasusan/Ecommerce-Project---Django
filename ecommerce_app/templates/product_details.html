@@ -6,6 +6,7 @@
     <title>{{ product.name }}</title>
 </head>
 <body>
+    
     <h1>{{ product.name }}</h1>
     <p>Category: {{ product.category }}</p>
     <p>Description: {{ product.description }}</p>
@@ -18,5 +19,8 @@
             <li>No reviews yet.</li>
         {% endfor %}
     </ul>
+    <a href="{% url 'updateReview' review.id %}"></a>
+    <a href="{% url 'delete_product' product.id %}">Delete</a>
+
 </body>
 </html>
