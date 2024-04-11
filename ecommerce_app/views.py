@@ -1,5 +1,5 @@
 from django.shortcuts import render, HttpResponse,redirect
-from .models import Product, Category
+from .models import Product, Category, Review
 from .forms import ProductForm, CategoryForm, ReviewForm
 
 
@@ -10,7 +10,8 @@ def product_list(request):
 
 def product_detail(request, pk):
     product = Product.objects.get(pk=pk)
-    return render(request, 'product_details.html', {'product': product})
+    review = Review.objects.filter(product=product)
+    return render(request, 'product_details.html', {'product': product,'review':review})
 
 def create_product(request):
     form = ProductForm()
@@ -21,7 +22,6 @@ def create_product(request):
             form.save()
             return redirect('product_list')
         
-
     context = {'form': form}
     return render(request, 'product_form.html', context)
 
@@ -39,7 +39,7 @@ def update_product(request,pk):
     return render(request,'product_form.html',context)
 
 def deleteProduct(request,pk):
-    product = Product.objects.get(id=pk)
+    product = Product.objects.get(id=pk)    
     if request.method == 'POST':
         product.delete()
         return redirect('product_list')
@@ -80,7 +80,7 @@ def deleteCategory(request,pk):
     category = Category.objects.get(id=pk)
     if request.method == 'POST':
         category.delete()
-        return redirect('product_list')
+        return redirect('category_list')
     
     context = {'object':category}
     return render(request,'delete.html',context)
@@ -88,37 +88,40 @@ def deleteCategory(request,pk):
 def home(request):
     return render(request, 'home.html')
 
-def createReview(request):
-    form = ReviewForm()
+
+def createReview(request,pk):
+    review = Review.objects.get(id=pk)
+    form = ReviewForm(initial={'product':pk})
 
     if request.method == 'POST':
-        form = ReviewForm(request.POST)
+        form = ReviewForm()
         if form.is_valid():
             form.save()
             return redirect('product_list')
         
-    context = {'form': form}
+    context = {'form': form,'product':pk}
     return render(request, 'review_form.html', context)
 
 def updateReview(request,pk):
-    category = Category.objects.get(id=pk)
-    form = CategoryForm(instance=category)
+    review = Review.objects.get(id=pk)
+    form = ReviewForm(initial={'product':pk})
 
     if request.method == 'POST':
-        form = CategoryForm(request.POST, instance = category)
+
+        form = CategoryForm(request.POST, instance = review)
         if form.is_valid():
             form.save()
-            return redirect('product_list')
-    context = {'form':form}
-    return render(request,'category_form.html',context)
+            return redirect('product/<int:pk>/')
+    context = {'form':form,'product':pk}
+    # initial
+    return render(request,'review_form.html',context)
 
-
-
-def deleteCategory(request,pk):
+def deleteReview(request,pk):
     category = Category.objects.get(id=pk)
     if request.method == 'POST':
         category.delete()
-        return redirect('product_list')
+        return redirect('category_list')
     
     context = {'object':category}
     return render(request,'delete.html',context)
+

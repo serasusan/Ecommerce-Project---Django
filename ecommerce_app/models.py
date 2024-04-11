@@ -30,6 +30,6 @@ class Review(models.Model):
     author = models.CharField(max_length=255)
     rating = models.IntegerField()
 
-def __str__(self):
-    return f"{self.Product.name} - {self.author} - {self.rating}"
+    def __str__(self):
+        return f"{self.Product.name} - {self.author} - {self.rating}"
 

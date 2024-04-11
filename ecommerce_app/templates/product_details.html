@@ -13,14 +13,15 @@
     <p>Price: ${{ product.price }}</p>
     <h2>Reviews:</h2>
     <ul>
-        {% for review in product.review_set.all %}
-            <li>{{ review.author }} - {{ review.content }} (Rating: {{ review.rating }})</li>
+        {% for review in review %}
+            <li>{{ review.author }} - {{ review.comment }} (Rating: {{ review.rating }})</li>
         {% empty %}
             <li>No reviews yet.</li>
         {% endfor %}
     </ul>
-    <a href="{% url 'updateReview' review.id %}"></a>
+    
     <a href="{% url 'delete_product' product.id %}">Delete</a>
+    <a href="{% url 'createReview' product.id %}">Add a review</a>
 
 </body>
 </html>
